@@ -1,37 +1,17 @@
-name: npm-publish
-
+name: Node.js Package
 on:
   push:
     branches:
       - main
-permissions:
-  contents: write
-  
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
-    # Clone 仓库
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
         with:
-          ref: master
-      # 安装 Node.js    
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20.x"
+          node-version: "12.x"
           registry-url: https://registry.npmjs.org/
-        
-      # 发布 NPM 包
-      - name: Publish Package
-        run: |
-          git config --global user.email "guaweb@hotmail.com"
-          git config --global user.name "guaweb"
-          npm version patch
-          npm publish
+      - run: npm publish
         env:
-          NODE_AUTH_TOKEN: $
-      - name: Push
-        run: |
-          git push
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
